@@ -26,10 +26,15 @@ namespace ModelEntity.DAO
         {
             return db.Users.Find(id);
         }
-        //Check ton tai User chua
-        public User GetByName(string name)
+        //Check User Name da co trong he thong chua
+        public bool GetByName(string userName)
         {
-            return db.Users.Find(name);
+            var result = db.Users.Count(x=>x.UserName==userName);
+            if (result > 0)
+            {
+                return true;
+            }
+            return false;
         }
         public long Insert(User entity)
         {

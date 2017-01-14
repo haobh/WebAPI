@@ -11,6 +11,7 @@ using Newtonsoft.Json;
 using System.Runtime.InteropServices;
 using System.Diagnostics.Contracts;
 using System.Collections;
+using DemoWebAPI.Commons;
 
 namespace DemoWebAPI.Controllers
 {
@@ -34,7 +35,7 @@ namespace DemoWebAPI.Controllers
             return model;
         }
         [HttpPost]
-        public bool InsertUser(string name, string userName, Boolean status)
+        public bool InsertUser(string name, string userName,string passWord, Boolean status)
         {
             if (ModelState.IsValid)
             {
@@ -42,17 +43,29 @@ namespace DemoWebAPI.Controllers
                 User user = new User();
                 user.Name = name;
                 user.UserName = userName;
+                user.Password = passWord;
                 user.Status = status;
-                var userDao = new UserDAO();
-                long id = userDao.Insert(user);//Goi ham Insert lop UserDAO
-                if (id > 0)
+                bool kiemtra = new UserDAO().GetByName(userName);
+                if (kiemtra == true)
                 {
-                    return true;
+                    return false;
                 }
                 else
                 {
-                    ModelState.AddModelError("", "Them User khong thanh cong !");
+                    var encryptedMd5Pas = Encryptor.MD5Hash(user.Password);//Goi ham ma hoa MD5 ben Common ma hoa Password
+                    user.Password = encryptedMd5Pas; //Gan ma hoa Password
+                    var userDao = new UserDAO();
+                    long id = userDao.Insert(user);//Goi ham Insert lop UserDAO
+                    if (id > 0)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("", "Them User khong thanh cong !");
+                    }
                 }
+               
             }
             return true;
         }
