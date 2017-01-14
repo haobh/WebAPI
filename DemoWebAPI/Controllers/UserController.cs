@@ -95,9 +95,9 @@ namespace DemoWebAPI.Controllers
             else return false;
         }
         [HttpGet]
-        public User Search(string name)
+        public List<User> Search(string name)
         {
-            var model = new UserDAO().Search(name);
+            var model = new UserDAO().SearchUser(name); ;
             return model;
         }
     }

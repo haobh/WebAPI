@@ -26,6 +26,11 @@ namespace ModelEntity.DAO
         {
             return db.Users.Find(id);
         }
+        //Check ton tai User chua
+        public User GetByName(string name)
+        {
+            return db.Users.Find(name);
+        }
         public long Insert(User entity)
         {
             db.Users.Add(entity); //Users la bang da dc EF gen ra trong EF, Goi phuong thuc Add entity User gan vao Users
@@ -41,10 +46,10 @@ namespace ModelEntity.DAO
             db.SaveChanges();  //Luu thong tin sau khi Update
             return true;
         }
-        //Search bản ghi, nhận vào la ID
-        public User Search(string name)
+        public List<User> SearchUser(string name)
         {
-            return db.Users.SingleOrDefault(x => x.Name == name);
+            return db.Users.Where(x => x.Name == name).ToList();  //Trả ra nhiều bản ghi
+            //return db.Users.SingleOrDefault(x=>x.Name==name); //Chỉ ra 1 bản ghi, First: trong bản ghi khác kiểu dữ liệu, Single cùng kiều
         }
         //Xóa bản ghi, nhận vào la ID
         public bool Delete(int id)
